@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const bcrypt = require('bcrypt');
 const cors = require('cors');
 
 app.use(bodyParser.json())
@@ -33,26 +32,21 @@ app.get('/', (req, res)=> {
 })
 
 app.post('/signin', (req, res) => {
-   // Load hash from your password DB.
-   bcrypt.compare(myPlaintextPassword, hash).then(function (res) {
-       // res == true
-   });
-   bcrypt.compare(someOtherPlaintextPassword, hash).then(function (res) {
-       // res == false
-   });
+   if(req.body.email === database.users[0].email && 
+      req.body.password === database.users[0].password) {
+       res.json(database.users[0]);
+      } else {
+          res.status(400).json('error logging in');
+      }
 })
 
 app.post('/register', (req, res) => {
     const {email, name, password} = req.body;
-    bcrypt.hash(password, saltRounds, function (err, hash) {
-        console.log(hash);
-        
-    });
+
     database.users.push({
         id: '125',
         name: name,
         email: email,
-        password: password,
         entries: 0,
         joined: new Date()
     })
